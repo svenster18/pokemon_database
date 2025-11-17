@@ -32,7 +32,7 @@ class UserHelper(context: Context): UserDao {
         database.close()
     }
 
-    override suspend fun register(user: UserEntity) {
+    override fun register(user: UserEntity) {
         val mutableDocument = MutableDocument()
             .setString(NAME, user.name)
             .setString(USERNAME, user.username)

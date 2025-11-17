@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserDao {
 
-    suspend fun register(user: UserEntity)
+    fun register(user: UserEntity)
     fun login(user: UserEntity): Flow<UserEntity>
 }
