@@ -4,23 +4,16 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.couchbase.lite.Collection
-import com.couchbase.lite.Database
-import com.mohamadrizki.pokemondatabase.core.data.source.local.db.DatabaseContract.UserColumns.Companion.COLLECTION_NAME
-import com.mohamadrizki.pokemondatabase.core.data.source.local.db.DatabaseHelper.Companion.DATABASE_NAME
 import com.mohamadrizki.pokemondatabase.utils.DataDummy
 import com.mohamadrizki.pokemondatabase.utils.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import okhttp3.internal.wait
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -58,13 +51,6 @@ class UserHelperTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
-
-    @Test
-    fun register_Success() = runTest {
-        val docId = userHelper.register(sampleUser)
-        val actualUser = userHelper.getUser(docId)
-        assertEquals(sampleUser.name, actualUser?.name)
-    }
 
     @Test
     fun login_Success() = runTest {

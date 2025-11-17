@@ -9,6 +9,7 @@ import com.couchbase.lite.MutableDocument
 import com.couchbase.lite.QueryBuilder
 import com.couchbase.lite.SelectResult
 import com.couchbase.lite.queryChangeFlow
+import com.mohamadrizki.pokemondatabase.core.data.source.local.UserDao
 import com.mohamadrizki.pokemondatabase.core.data.source.local.db.DatabaseContract.UserColumns.Companion.NAME
 import com.mohamadrizki.pokemondatabase.core.data.source.local.db.DatabaseContract.UserColumns.Companion.PASSWORD
 import com.mohamadrizki.pokemondatabase.core.data.source.local.db.DatabaseContract.UserColumns.Companion.USERNAME
@@ -16,7 +17,7 @@ import com.mohamadrizki.pokemondatabase.core.data.source.local.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 
-class UserHelper(context: Context) {
+class UserHelper(context: Context): UserDao {
     private val databaseHelper: DatabaseHelper = DatabaseHelper(context)
     private lateinit var database: Database
     private lateinit var collection: Collection
@@ -31,28 +32,15 @@ class UserHelper(context: Context) {
         database.close()
     }
 
-    suspend fun register(user: UserEntity): String {
+    override suspend fun register(user: UserEntity) {
         val mutableDocument = MutableDocument()
             .setString(NAME, user.name)
             .setString(USERNAME, user.username)
             .setString(PASSWORD, user.password)
         collection.save(mutableDocument)
-        return mutableDocument.id
     }
 
-    fun getUser(docId: String): UserEntity? {
-        collection.getDocument(docId)
-            ?.let {
-                return UserEntity(
-                    it.getString(NAME) ?: "",
-                    it.getString(USERNAME) ?: "",
-                    it.getString(PASSWORD) ?: ""
-                )
-            }
-        return null
-    }
-
-    fun login(user: UserEntity): Flow<UserEntity> {
+    override fun login(user: UserEntity): Flow<UserEntity> {
         val query = QueryBuilder.select(SelectResult.all())
             .from(DataSource.collection(collection))
             .where(Expression.property(USERNAME).equalTo(Expression.string(user.username)).and(
